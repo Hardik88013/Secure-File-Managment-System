@@ -14,3 +14,28 @@
 #define MAX_COMMAND 1024    
 #define PASSWORD "admin123"  
 #define LOG_FILE "file_ops.log"
+// Function prototypes 
+void show_menu(); 
+void authenticate(); 
+void log_operation(const char* operation, const char* filename); 
+void list_files(); 
+void create_file(); 
+void delete_file(); 
+void rename_file(); 
+void edit_file(); 
+void search_file(); 
+void view_file(); 
+void sort_file(); 
+void copy_file(); 
+void move_file(); 
+void append_to_file(); 
+void check_file_size(); 
+void check_last_modified(); 
+void clear_file(); 
+void encrypt_file(); 
+void decrypt_file(); 
+void compress_file(); 
+void decompress_file(); 
+void change_permissions(); 
+void backup_file(); 
+void search_content();
