@@ -79,3 +79,30 @@ case 20: backup_file(); break;
     } 
     return 0; 
 }
+void authenticate() { 
+    char input_password[50]; 
+    int attempts = 3; 
+    while (attempts > 0) { 
+        printf("Enter password (%d attempts remaining): ", attempts); 
+        fgets(input_password, sizeof(input_password), stdin); 
+        input_password[strcspn(input_password, "\n")] = 0; 
+        if (strcmp(input_password, PASSWORD) == 0) { 
+            printf("Access Granted!\n"); 
+            return; 
+        } 
+        printf("Incorrect password!\n"); 
+        attempts--; 
+    } 
+    printf("Access Denied! Too many failed attempts.\n"); 
+    exit(1); 
+} 
+ 
+void log_operation(const char* operation, const char* filename) { 
+    FILE* log = fopen(LOG_FILE, "a"); 
+    if (log) { 
+        time_t now; 
+        time(&now); 
+        fprintf(log, "[%s] %s: %s\n", ctime(&now), operation, filename); 
+        fclose(log); 
+    } 
+}
