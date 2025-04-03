@@ -106,3 +106,49 @@ void log_operation(const char* operation, const char* filename) {
         fclose(log); 
     } 
 }
+void show_menu() { 
+    printf("\n==== Advanced File Management System ====\n"); 
+    printf("1. List all files\n"); 
+    printf("2. Create a new file\n"); 
+    printf("3. Delete a file\n"); 
+    printf("4. Rename a file\n"); 
+    printf("5. Edit file content\n"); 
+    printf("6. Search for a file\n"); 
+    printf("7. View file content\n"); 
+    printf("8. Sort file content\n"); 
+    printf("9. Copy file\n"); 
+    printf("10. Move file\n"); 
+    printf("11. Append content to file\n"); 
+    printf("12. Check file size\n"); 
+ 
+    printf("13. Check last modified time\n"); 
+    printf("14. Clear file content\n"); 
+    printf("15. Encrypt file\n"); 
+    printf("16. Decrypt file\n"); 
+    printf("17. Compress file\n"); 
+    printf("18. Decompress file\n"); 
+    printf("19. Change file permissions\n"); 
+    printf("20. Backup file\n"); 
+    printf("21. Search content in file\n"); 
+    printf("0. Exit\n"); 
+} 
+ 
+void list_files() { 
+    DIR* dir = opendir("."); 
+    if (!dir) { 
+        printf("Error opening directory: %s\n", strerror(errno)); 
+        return; 
+    } 
+    struct dirent* entry; 
+    printf("Directory contents:\n"); 
+    while ((entry = readdir(dir)) != NULL) { 
+        if (entry->d_name[0] != '.') { 
+            struct stat st; 
+            if (stat(entry->d_name, &st) == 0) { 
+                printf("%-20s %ld bytes %s", entry->d_name, st.st_size, ctime(&st.st_mtime)); 
+            } 
+        } 
+    } 
+    closedir(dir); 
+    log_operation("List files", "directory"); 
+}
