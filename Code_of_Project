@@ -224,3 +224,85 @@ void search_file() {
         printf("File not found!\n"); 
     } 
 }
+void view_file() { 
+    char filename[MAX_FILENAME]; 
+    printf("Enter filename to view: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    FILE* fp = fopen(filename, "r"); 
+    if (!fp) { 
+        printf("Error opening file: %s\n", strerror(errno)); 
+        return; 
+    } 
+    char ch; 
+    while ((ch = fgetc(fp)) != EOF) { 
+        putchar(ch); 
+    } 
+    fclose(fp); 
+    printf("\n"); 
+    log_operation("View", filename); 
+} 
+ 
+void sort_file() { 
+    char filename[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename to sort: "); 
+ 
+fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    strcpy(command, "sort \""); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 10); 
+    strncat(command, "\" -o \"", MAX_COMMAND - strlen(command)); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 2); 
+    strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("File sorted successfully!\n"); 
+        log_operation("Sort", filename); 
+    } else { 
+        printf("Error sorting file!\n"); 
+    } 
+} 
+ 
+void copy_file() { 
+    char src[MAX_FILENAME], dest[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter source filename: "); 
+    fgets(src, MAX_FILENAME, stdin); 
+    src[strcspn(src, "\n")] = 0; 
+    printf("Enter destination filename: "); 
+    fgets(dest, MAX_FILENAME, stdin); 
+    dest[strcspn(dest, "\n")] = 0; 
+    strcpy(command, "cp \""); 
+    strncat(command, src, MAX_FILENAME - strlen(command) - 10); 
+    strncat(command, "\" \"", MAX_COMMAND - strlen(command)); 
+    strncat(command, dest, MAX_FILENAME - strlen(command) - 2); 
+    strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("File copied successfully!\n"); 
+        log_operation("Copy", src); 
+    } else { 
+        printf("Error copying file!\n"); 
+    } 
+} 
+ 
+void move_file() { 
+    char src[MAX_FILENAME], dest[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter source filename: "); 
+    fgets(src, MAX_FILENAME, stdin); 
+    src[strcspn(src, "\n")] = 0; 
+    printf("Enter destination filename: "); 
+    fgets(dest, MAX_FILENAME, stdin); 
+    dest[strcspn(dest, "\n")] = 0; 
+    strcpy(command, "mv \""); 
+    strncat(command, src, MAX_FILENAME - strlen(command) - 10); 
+    strncat(command, "\" \"", MAX_COMMAND - strlen(command)); 
+    strncat(command, dest, MAX_FILENAME - strlen(command) - 2); 
+    strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("File moved successfully!\n"); 
+        log_operation("Move", src); 
+    } else { 
+        printf("Error moving file!\n"); 
+    } 
+}
