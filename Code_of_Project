@@ -152,3 +152,75 @@ void list_files() {
     closedir(dir); 
     log_operation("List files", "directory"); 
 }
+void create_file() { 
+    char filename[MAX_FILENAME]; 
+    printf("Enter filename to create: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    FILE* fp = fopen(filename, "w"); 
+    if (fp) { 
+        fclose(fp); 
+        printf("File '%s' created successfully!\n", filename); 
+        log_operation("Create", filename); 
+    } else { 
+        printf("Error creating file: %s\n", strerror(errno)); 
+    } 
+} 
+ 
+void delete_file() { 
+    char filename[MAX_FILENAME]; 
+    printf("Enter filename to delete: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    if (remove(filename) == 0) { 
+        printf("File '%s' deleted successfully!\n", filename); 
+        log_operation("Delete", filename); 
+    } else { 
+        printf("Error deleting file: %s\n", strerror(errno)); 
+    } 
+} 
+ 
+void rename_file() { 
+    char oldname[MAX_FILENAME], newname[MAX_FILENAME]; 
+    printf("Enter current filename: "); 
+    fgets(oldname, MAX_FILENAME, stdin); 
+    oldname[strcspn(oldname, "\n")] = 0; 
+    printf("Enter new filename: "); 
+    fgets(newname, MAX_FILENAME, stdin); 
+    newname[strcspn(newname, "\n")] = 0; 
+    if (rename(oldname, newname) == 0) { 
+        printf("File renamed successfully!\n"); 
+        log_operation("Rename", oldname); 
+    } else { 
+        printf("Error renaming file: %s\n", strerror(errno)); 
+    } 
+} 
+ 
+void edit_file() { 
+    char filename[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename to edit: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    strcpy(command, "nano \""); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 2); 
+    strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        log_operation("Edit", filename); 
+    } else { 
+        printf("Error editing file: %s\n", strerror(errno)); 
+    } 
+} 
+ 
+void search_file() { 
+    char filename[MAX_FILENAME]; 
+    printf("Enter filename to search: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    if (access(filename, F_OK) != -1) { 
+        printf("File '%s' found!\n", filename); 
+        log_operation("Search", filename); 
+    } else { 
+        printf("File not found!\n"); 
+    } 
+}
