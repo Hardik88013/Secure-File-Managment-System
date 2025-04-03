@@ -39,3 +39,43 @@ void decompress_file();
 void change_permissions(); 
 void backup_file(); 
 void search_content();
+int main() { 
+authenticate(); 
+int choice; 
+while (1) { 
+show_menu(); 
+printf("Enter your choice: "); 
+if (scanf("%d", &choice) != 1) { 
+printf("Invalid input! Please enter a number.\n"); 
+while (getchar() != '\n'); // Clear input buffer 
+continue; 
+} 
+getchar();  
+switch (choice) { 
+case 1: list_files(); break; 
+case 2: create_file(); break; 
+case 3: delete_file(); break; 
+case 4: rename_file(); break; 
+case 5: edit_file(); break; 
+case 6: search_file(); break; 
+case 7: view_file(); break; 
+case 8: sort_file(); break; 
+case 9: copy_file(); break; 
+case 10: move_file(); break; 
+case 11: append_to_file(); break; 
+case 12: check_file_size(); break; 
+case 13: check_last_modified(); break; 
+case 14: clear_file(); break; 
+case 15: encrypt_file(); break; 
+case 16: decrypt_file(); break; 
+case 17: compress_file(); break; 
+case 18: decompress_file(); break; 
+case 19: change_permissions(); break; 
+case 20: backup_file(); break; 
+            case 21: search_content(); break; 
+            case 0: printf("Exiting program.\n"); exit(0); 
+            default: printf("Invalid choice, please try again.\n"); 
+        } 
+    } 
+    return 0; 
+}
