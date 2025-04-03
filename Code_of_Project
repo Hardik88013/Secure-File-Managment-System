@@ -306,3 +306,206 @@ void move_file() {
         printf("Error moving file!\n"); 
     } 
 }
+void append_to_file() { 
+    char filename[MAX_FILENAME], content[MAX_CONTENT]; 
+    printf("Enter filename: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    printf("Enter content to append: "); 
+    fgets(content, MAX_CONTENT, stdin); 
+    FILE* fp = fopen(filename, "a"); 
+    if (fp) { 
+        fprintf(fp, "%s", content); 
+        fclose(fp); 
+        printf("Content appended successfully!\n"); 
+        log_operation("Append", filename); 
+    } else { 
+        printf("Error opening file: %s\n", strerror(errno)); 
+    } 
+} 
+ 
+void check_file_size() { 
+    char filename[MAX_FILENAME]; 
+    printf("Enter filename: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    struct stat st; 
+    if (stat(filename, &st) == 0) { 
+        printf("File size: %ld bytes\n", st.st_size); 
+        log_operation("Check size", filename); 
+    } else { 
+        printf("Error getting file size: %s\n", strerror(errno)); 
+    } 
+} 
+ 
+void check_last_modified() { 
+    char filename[MAX_FILENAME]; 
+    printf("Enter filename: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    struct stat st; 
+    if (stat(filename, &st) == 0) { 
+        printf("Last modified: %s", ctime(&st.st_mtime)); 
+        log_operation("Check modified", filename); 
+    } else { 
+        printf("Error getting file modification time: %s\n", strerror(errno)); 
+    } 
+} 
+ 
+void clear_file() { 
+    char filename[MAX_FILENAME]; 
+    printf("Enter filename to clear: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    FILE* fp = fopen(filename, "w"); 
+    if (fp) { 
+        fclose(fp); 
+        printf("File '%s' cleared successfully!\n", filename); 
+        log_operation("Clear", filename); 
+    } else { 
+        printf("Error clearing file: %s\n", strerror(errno)); 
+    } 
+} 
+void encrypt_file() { 
+    char filename[MAX_FILENAME], output[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename to encrypt: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    strcpy(output, filename); 
+    strncat(output, ".enc", MAX_FILENAME - strlen(output) - 1); 
+    strcpy(command, "openssl enc -aes-256-cbc -salt -in \""); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 20); 
+    strncat(command, "\" -out \"", MAX_COMMAND - strlen(command)); 
+    strncat(command, output, MAX_FILENAME - strlen(command) - 20); 
+    strncat(command, "\" -k ", MAX_COMMAND - strlen(command)); 
+    strncat(command, PASSWORD, MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("File encrypted successfully as %s\n", output); 
+        log_operation("Encrypt", filename); 
+    } else { 
+        printf("Error encrypting file!\n"); 
+    } 
+} 
+ 
+void decrypt_file() { 
+    char filename[MAX_FILENAME], output[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename to decrypt: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    strcpy(output, filename); 
+    strncat(output, ".dec", MAX_FILENAME - strlen(output) - 1); 
+    strcpy(command, "openssl enc -aes-256-cbc -d -in \""); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 20); 
+    strncat(command, "\" -out \"", MAX_COMMAND - strlen(command)); 
+    strncat(command, output, MAX_FILENAME - strlen(command) - 20); 
+    strncat(command, "\" -k ", MAX_COMMAND - strlen(command)); 
+    strncat(command, PASSWORD, MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("File decrypted successfully as %s\n", output); 
+        log_operation("Decrypt", filename); 
+    } else { 
+        printf("Error decrypting file!\n"); 
+    } 
+} 
+ 
+void compress_file() { 
+    char filename[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename to compress: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    strcpy(command, "gzip \""); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 2); 
+    strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("File compressed successfully!\n"); 
+        log_operation("Compress", filename); 
+    } else { 
+        printf("Error compressing file!\n"); 
+    } 
+} 
+ 
+void decompress_file() { 
+    char filename[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename to decompress: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    strcpy(command, "gunzip \""); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 2); 
+    strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("File decompressed successfully!\n"); 
+        log_operation("Decompress", filename); 
+    } else { 
+        printf("Error decompressing file!\n"); 
+    } 
+} 
+ 
+void change_permissions() { 
+    char filename[MAX_FILENAME], perms[10]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    printf("Enter permissions (e.g., 755): "); 
+    fgets(perms, 10, stdin); 
+    perms[strcspn(perms, "\n")] = 0; 
+    strcpy(command, "chmod "); 
+    strncat(command, perms, 10); 
+    strncat(command, " \"", MAX_COMMAND - strlen(command)); 
+    strncat(command, filename, MAX_FILENAME - strlen(command) - 2); 
+    strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+    if (system(command) == 0) { 
+        printf("Permissions changed successfully!\n"); 
+        log_operation("Change permissions", filename); 
+    } else { 
+        printf("Error changing permissions!\n"); 
+    } 
+}
+void backup_file() { 
+    char filename[MAX_FILENAME], backup[MAX_FILENAME]; 
+    char command[MAX_COMMAND]; 
+    printf("Enter filename to backup: "); 
+    fgets(filename, MAX_FILENAME, stdin); 
+    filename[strcspn(filename, "\n")] = 0; 
+    strcpy(backup, filename); 
+    strncat(backup, ".bak", MAX_FILENAME - strlen(backup) - 1); 
+    strcpy(command, "cp \""); 
+strncat(command, filename, MAX_FILENAME - strlen(command) - 10); 
+strncat(command, "\" \"", MAX_COMMAND - strlen(command)); 
+strncat(command, backup, MAX_FILENAME - strlen(command) - 2); 
+strncat(command, "\"", MAX_COMMAND - strlen(command)); 
+if (system(command) == 0) { 
+printf("File backed up as %s\n", backup); 
+log_operation("Backup", filename); 
+} else { 
+printf("Error creating backup!\n"); 
+} 
+} 
+void search_content() { 
+char filename[MAX_FILENAME], search_term[MAX_CONTENT]; 
+printf("Enter filename: "); 
+fgets(filename, MAX_FILENAME, stdin); 
+filename[strcspn(filename, "\n")] = 0; 
+printf("Enter search term: "); 
+fgets(search_term, MAX_CONTENT, stdin); 
+search_term[strcspn(search_term, "\n")] = 0; 
+FILE* fp = fopen(filename, "r"); 
+if (!fp) { 
+printf("Error opening file: %s\n", strerror(errno)); 
+return; 
+} 
+char line[MAX_CONTENT]; 
+int line_num = 0; 
+while (fgets(line, sizeof(line), fp)) { 
+line_num++; 
+if (strstr(line, search_term)) { 
+printf("Line %d: %s", line_num, line); 
+} 
+} 
+fclose(fp); 
+log_operation("Search content", filename); 
+}
