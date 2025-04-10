@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure File Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.0.0/crypto-js.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Secure File Management System</h1>
+        <div class="file-upload">
+            <input type="file" id="fileInput" multiple>
+            <input type="password" id="uploadPassword" placeholder="Set password for file">
+            <button onclick="uploadFiles()">Upload</button>
+        </div>
+        <div class="file-list" id="fileList"></div>
+    </div>
+    <script src="app.js"></script>
+</body>
+</html>
